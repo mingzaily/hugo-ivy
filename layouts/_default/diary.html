@@ -1,0 +1,18 @@
+{{ partial "header.html" . }}
+
+{{ .Content }}
+
+<div class="diary-container">
+    <div class="diary-content">
+        <ul class="diary-list">
+            {{ range .Params.dialogue }}
+            <li class="diary-entry">
+                <p class="diary-text">{{ .text }}</p>
+                <p class="diary-date">{{ .date }}</p>
+            </li>
+            {{ end }}
+        </ul>
+    </div>
+</div>
+
+{{ partial "footer.html" . }}
