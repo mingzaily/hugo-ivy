@@ -40,7 +40,7 @@
     {{ end }}
     {{ end }}
 
-    {{ if .Keywords }}
+    {{ if .Keywords }} 
     <meta property="keywords" content ="{{ delimit .Keywords ", " }}">
     {{ end }}
 
@@ -51,6 +51,14 @@
     <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}" />
     <link rel="stylesheet" href="{{ "/css/fonts.css" | relURL }}" />
     <link rel="stylesheet" href="{{ "/css/diary.css" | relURL }}" />
+    <link rel="stylesheet" href="{{ "/css/pagination.css" | relURL }}" />
+    <script>
+      window.siteParams = {
+        beian: "{{.Site.Params.beian | markdownify | base64Encode}}",
+        github: "{{.Site.Params.github | markdownify | base64Encode}}"
+      }
+    </script>
+    <script src="{{ "/js/confusion.js" | relURL }}" defer></script>
     {{ partial "head_custom.html" . }}
   </head>
 

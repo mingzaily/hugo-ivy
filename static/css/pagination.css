@@ -1,0 +1,40 @@
+.pagination {
+    text-align: center;
+    margin: 2em 0;
+  }
+  
+  .pagination div {
+    display: inline-block;
+  }
+  
+  .pagination a,
+  .pagination span {
+    padding: 0.5em 1em;
+    margin: 0 0.2em;
+  }
+  
+  /* 更具体的选择器来移除下划线 */
+  .pagination a.prev,
+  .pagination a.next {
+    text-decoration: none !important;
+    border-bottom: none !important;
+    color: #1a1a1a;
+    transition: color 0.2s ease;
+  }
+  
+  .pagination .page-number {
+    color: #666;
+  }
+  
+  .pagination .prev:hover,
+  .pagination .next:hover {
+    color: #007acc;
+  }
+  
+  @media screen and (max-width: 480px) {
+    .pagination a,
+    .pagination span {
+      padding: 0.3em 0.7em;
+      margin: 0 0.1em;
+  }
+}

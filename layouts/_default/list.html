@@ -1,9 +1,8 @@
-{{ partial "header.html" . }}
-
-{{ .Content }}
+{{ partial "header.html" . }} {{ .Content }} {{ $paginator := .Paginate (where
+(cond .IsHome .Site.RegularPages .Pages) "Section" "posts") }}
 
 <ul>
-  {{ range (where (cond .IsHome .Site.RegularPages .Pages) "Section" "!=" "") }}
+  {{ range $paginator.Pages }}
   <li>
     <span class="date">{{ .Date.Format "2006/01/02" }}</span>
     <a href="{{ .RelPermalink }}">{{ .Title }}</a>
@@ -11,4 +10,16 @@
   {{ end }}
 </ul>
 
-{{ partial "footer.html" . }}
+{{ if or $paginator.HasPrev $paginator.HasNext }}
+<nav class="pagination">
+  {{ if $paginator.HasPrev }}
+  <a class="prev" href="{{ $paginator.Prev.URL }}">上一页</a>
+  {{ end }}
+  <span class="page-number"
+    >{{ $paginator.PageNumber }} / {{ $paginator.TotalPages }}</span
+  >
+  {{ if $paginator.HasNext }}
+  <a class="next" href="{{ $paginator.Next.URL }}">下一页</a>
+  {{ end }}
+</nav>
+{{ end }} {{ partial "footer.html" . }}

@@ -1,18 +1,16 @@
-{{ partial "header.html" . }}
-
-{{ .Content }}
+{{ partial "header.html" . }} {{ .Content }}
 
 <div class="diary-container">
-    <div class="diary-content">
-        <ul class="diary-list">
-            {{ range .Params.dialogue }}
-            <li class="diary-entry">
-                <p class="diary-text">{{ .text }}</p>
-                <p class="diary-date">{{ .date }}</p>
-            </li>
-            {{ end }}
-        </ul>
-    </div>
+  <div class="diary-content">
+    <ul class="diary-list">
+      {{ range (where .Site.RegularPages "Section" "diary") }}
+      <li class="diary-entry">
+        <p class="diary-text">{{ .Content }}</p>
+        <p class="diary-date">{{ .Date.Format "2006/01/02" }}</p>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
 </div>
 
 {{ partial "footer.html" . }}

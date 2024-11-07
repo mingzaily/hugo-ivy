@@ -3,7 +3,13 @@
   {{ partial "footer_highlightjs" . }}
   {{ with .Site.Params.footer }}
   <hr>
+  <div class="footer-info">
   <div class="copyright">{{ replace . "{Year}" now.Year | markdownify }}</div>
+  {{ end }}
+  {{ if .Site.Params.github }}
+    |
+    <div class="footer-links" id="footer-links">{{ .Site.Params.github | markdownify }}</div>
+  </div>
   {{ end }}
   </footer>
   </article>
