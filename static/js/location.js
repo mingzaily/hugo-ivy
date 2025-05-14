@@ -46,6 +46,18 @@ function isInChina() {
   });
 }
 
-isInChina().then((isChina) => {
+function isInChinaV2() {
+  return new Promise((resolve) => {
+    // 获取当前域名
+    const hostname = window.location.hostname;
+    if (hostname.includes("github.io")) {
+      resolve(false);
+      return;
+    }
+    resolve(true);
+  });
+}
+
+isInChinaV2().then((isChina) => {
   updateFooterDisplay(isChina);
 });
