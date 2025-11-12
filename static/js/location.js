@@ -58,6 +58,6 @@ function isInChinaV2() {
   });
 }
 
-isInChinaV2().then((isChina) => {
+isInChina().then((isChina) => {
   updateFooterDisplay(isChina);
 });
