@@ -1,0 +1,4 @@
+{{ if in (string .Content) "language-mermaid" }}
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" defer></script>
+<script src="{{ "/js/mermaid-init.js" | relURL }}" defer></script>
+{{ end }}
