@@ -1,0 +1,30 @@
+{{ $giscus := .Site.Params.giscus }}
+{{ $ready := and $giscus $giscus.enable $giscus.repo $giscus.repoID $giscus.category $giscus.categoryID }}
+{{ if $ready }}
+<hr class="comments-divider">
+<section class="comments">
+  <script
+    src="https://giscus.app/client.js"
+    data-repo="{{ $giscus.repo }}"
+    data-repo-id="{{ $giscus.repoID }}"
+    data-category="{{ $giscus.category }}"
+    data-category-id="{{ $giscus.categoryID }}"
+    data-mapping="{{ default "pathname" $giscus.mapping }}"
+    data-strict="{{ default 0 $giscus.strict }}"
+    data-reactions-enabled="{{ default 1 $giscus.reactionsEnabled }}"
+    data-emit-metadata="{{ default 0 $giscus.emitMetadata }}"
+    data-input-position="{{ default "bottom" $giscus.inputPosition }}"
+    data-theme="{{ default "light" $giscus.theme }}"
+    data-lang="{{ default "zh-CN" $giscus.lang }}"
+    data-loading="{{ default "lazy" $giscus.loading }}"
+    crossorigin="anonymous"
+    async>
+  </script>
+  <noscript>请开启 JavaScript 查看和提交评论。</noscript>
+</section>
+{{ else if and $giscus $giscus.enable }}
+<hr class="comments-divider">
+<section class="comments comments--warning">
+  <p>Giscus 配置不完整，请填写 repoID / category 等信息后再刷新页面。</p>
+</section>
+{{ end }}
