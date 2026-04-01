@@ -1,0 +1,109 @@
+{{ if .IsPage }}
+{{ $currentPage := . }}
+{{ $hasSeries := .Params.series }}
+<div id="toc-panel" class="toc-panel">
+
+  {{ if $hasSeries }}
+  <div class="toc-panel-tabs">
+    <button class="toc-tab active" data-tab="toc">目录</button>
+    <button class="toc-tab" data-tab="series">系列</button>
+  </div>
+  {{ end }}
+
+  <div class="toc-panel-content" id="toc-tab-content">
+    <nav id="toc-nav" class="toc-nav">
+      <!-- JS 动态填充 -->
+    </nav>
+  </div>
+
+  {{ if $hasSeries }}
+  <div class="toc-panel-content hidden" id="series-tab-content">
+    {{ $series := .Params.series }}
+    <nav class="toc-nav">
+      <ul>
+        {{ range sort (where $currentPage.Site.RegularPages "Params.series" $series) "Params.series_index" }}
+        {{ $isExtra := ge (.Params.series_index | default 0) 99 }}
+        <li class="{{ if eq .Permalink $currentPage.Permalink }}current{{ end }}{{ if $isExtra }} series-extra{{ end }}">
+          <a href="{{ .Permalink }}">{{ .Title }}</a>
+        </li>
+        {{ end }}
+      </ul>
+    </nav>
+  </div>
+  {{ end }}
+
+</div>
+
+<script>
+(function() {
+  var hasSeries = {{ if $hasSeries }}true{{ else }}false{{ end }};
+
+  // Tab 切换（仅有系列时才存在 tab）
+  if (hasSeries) {
+    var tabs = document.querySelectorAll('.toc-tab');
+    var tocContent = document.getElementById('toc-tab-content');
+    var seriesContent = document.getElementById('series-tab-content');
+
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        tabs.forEach(function(t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        var target = tab.dataset.tab;
+        tocContent.classList.toggle('hidden', target !== 'toc');
+        seriesContent.classList.toggle('hidden', target !== 'series');
+      });
+    });
+  }
+
+  // 动态生成 TOC（排除 header 里的 meta 标题）
+  function buildToc() {
+    var all = document.querySelectorAll('.main h2, .main h3');
+    var headings = Array.prototype.filter.call(all, function(h) {
+      return !h.closest('.main header');
+    });
+    var nav = document.getElementById('toc-nav');
+    if (!headings.length) {
+      nav.innerHTML = '<span class="toc-empty">—</span>';
+      return;
+    }
+    var ul = document.createElement('ul');
+    headings.forEach(function(h, i) {
+      if (!h.id) h.id = 'heading-' + i;
+      var li = document.createElement('li');
+      li.className = h.tagName === 'H3' ? 'toc-h3' : 'toc-h2';
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+    nav.appendChild(ul);
+  }
+
+  // Scroll spy
+  function scrollSpy() {
+    var all = document.querySelectorAll('.main h2, .main h3');
+    var headings = Array.prototype.filter.call(all, function(h) {
+      return !h.closest('.main header');
+    });
+    var links = document.querySelectorAll('#toc-nav a');
+    if (!links.length) return;
+
+    var current = '';
+    headings.forEach(function(h) {
+      if (h.getBoundingClientRect().top <= 100) {
+        current = h.id;
+      }
+    });
+
+    links.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+
+  buildToc();
+  window.addEventListener('scroll', scrollSpy, { passive: true });
+  scrollSpy();
+})();
+</script>
+{{ end }}

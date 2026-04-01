@@ -2,31 +2,45 @@
 <h1>{{ .Title }}</h1>
 {{ with .Params.subtitle }}
 <h2 class="subtitle">{{ . }}</h2>
-{{ end }} {{ if .IsPage }}
+{{ end }} {{ if .IsPage }} {{ $authorRaw := or (or .Params.author (index (or
+.Site.Params.author dict) .Section)) nil }} {{ $author := "" }} {{ with
+$authorRaw }} {{ if reflect.IsSlice . }} {{ $author = delimit . " · " }} {{ else
+}} {{ $author = printf "%v" . }} {{ end }} {{ end }} {{ $collaborators := "" }}
+{{ with .Params.collaborators }} {{ if reflect.IsSlice . }} {{ $collaborators =
+delimit . "、" }} {{ else }} {{ $collaborators = printf "%v" . }} {{ end }} {{
+end }} {{ $publishDate := "" }} {{ if .Params.date }} {{ $publishDate =
+.Date.Format "2006-01-02" }} {{ else if .Lastmod }} {{ $publishDate =
+.Lastmod.Format "2006-01-02" }} {{ end }} {{ $updated := "" }} {{ with
+.Params.updated }} {{ $updated = (time .).Format "2006-01-02" }} {{ else }} {{
+if and .Lastmod (ne (.Lastmod.Format "2006-01-02") $publishDate) }} {{ $updated
+= .Lastmod.Format "2006-01-02" }} {{ end }} {{ end }} {{ if or $author
+$publishDate $updated }}
 <h3 class="post-meta-line">
-{{ $author := or (or .Params.author (index (or .Site.Params.author dict) .Section)) "" }}
-{{ $publishDate := "" }}
-{{ if .Params.date }}
-{{ $publishDate = .Date.Format "2006-01-02" }}
-{{ else if .Lastmod }}
-{{ $publishDate = .Lastmod.Format "2006-01-02" }}
-{{ end }}
-{{ $updated := "" }}
-{{ with .Params.updated }}
-{{ $updated = (time .).Format "2006-01-02" }}
-{{ else }}
-{{ if and .Lastmod (ne (.Lastmod.Format "2006-01-02") $publishDate) }}
-{{ $updated = .Lastmod.Format "2006-01-02" }}
-{{ end }}
-{{ end }}
-{{ with $author }}{{ . }}{{ end }}
-{{ with $publishDate }}
-{{ if $author }} / {{ end }}{{ . }}
-{{ end }}
-{{ if and $updated (ne $updated $publishDate) }}
-（更新 {{ $updated }}）
-{{ end }}
+  {{ with $author }}{{ . }}{{ end }} {{ with $publishDate }}{{ if $author }} /
+  {{ end }}{{ . }}{{ end }} {{ with $collaborators }}{{ if or $author
+  $publishDate }} · {{ end }}协作：{{ . }}{{ end }} {{ if and $updated (ne
+  $updated $publishDate) }}（更新 {{ $updated }}）{{ end }}
 </h3>
-{{ end }}
+{{ end }} {{ end }}
 <hr />
-{{ end }}
+{{ if .IsPage }} {{ with .Params.series }} {{ $series := . }} {{ $currentPage :=
+$ }} {{ $seriesPages := sort (where $currentPage.Site.RegularPages
+"Params.series" $series) "Params.series_index" }}
+<div class="series-nav">
+  <p class="series-nav-label">系列文章 · {{ $series }}</p>
+  <ol class="series-nav-list">
+    {{ range $seriesPages }} {{ $itemIsExtra := ge (.Params.series_index |
+    default 0) 99 }}
+    <li
+      class="{{ if eq .Permalink $currentPage.Permalink }}current{{ end }}{{ if $itemIsExtra }} series-extra{{ end }}"
+    >
+      {{- if eq .Permalink $currentPage.Permalink -}}
+      <span>{{ .Title }}</span>
+      {{- else -}}
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+      {{- end -}}
+    </li>
+    {{ end }}
+  </ol>
+</div>
+{{ end }} {{ end }} {{ end }}

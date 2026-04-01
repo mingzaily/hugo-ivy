@@ -1,47 +1,33 @@
 {{ partial "header.html" . }}
 
-{{ $entries := .RegularPages.ByDate.Reverse }}
+{{ $entries := first 10 (.RegularPages.ByDate.Reverse) }}
 {{ $entryCount := len $entries }}
 
 <div class="diary-page">
-  <section class="diary-hero">
-    <p class="diary-hero__eyebrow">Moments, Notes, Timeline</p>
-
-    {{ with .Content }}
-    <div class="diary-hero__intro">{{ . }}</div>
-    {{ else }}
-    <p class="diary-hero__intro">
-      把短一点的日常、碎片想法和阶段性心情，留在这条轻量的时间线里。
-    </p>
-    {{ end }}
-
-    {{ if gt $entryCount 0 }}
-    <div class="diary-hero__stats" aria-label="说说概览">
-      <span>{{ $entryCount }} 条记录</span>
-      <span>按时间倒序</span>
-      <span>最新 {{ (index $entries 0).Date.Format "2006/01/02" }}</span>
-    </div>
-    {{ end }}
-  </section>
+  {{ with .Content }}
+  <div class="diary-intro">{{ . }}</div>
+  {{ else }}
+  <p class="diary-intro">
+    把短一点的日常、碎片想法和阶段性心情，留在这一页。
+  </p>
+  {{ end }}
 
   {{ if gt $entryCount 0 }}
-  <div class="diary-stream">
+  <div class="diary-timeline">
     {{ range sort ($entries.GroupByDate "2006") "Key" "desc" }}
     <section class="diary-year">
-      <div class="diary-year__label">
-        <span>{{ .Key }}</span>
-      </div>
-
+      <h2 class="diary-year__label">{{ .Key }}</h2>
       <div class="diary-year__entries">
         {{ range sort .Pages "Date" "desc" }}
-        <article class="diary-card" id="diary-{{ .Date.Format "20060102" }}">
-          <div class="diary-card__date">
-            <span class="diary-card__month">{{ .Date.Format "01 月" }}</span>
-            <strong class="diary-card__day">{{ .Date.Format "02" }}</strong>
-            <span class="diary-card__stamp">{{ .Date.Format "2006/01/02" }}</span>
+        <article class="diary-item" id="diary-{{ .Date.Format "20060102" }}">
+          <div class="diary-item__card">
+            <time class="diary-item__date" datetime="{{ .Date.Format "2006-01-02" }}">
+              <span class="diary-item__month">{{ .Date.Format "01 月" }}</span>
+              <strong class="diary-item__day">{{ .Date.Format "02" }}</strong>
+              <span class="diary-item__stamp">{{ .Date.Format "2006/01/02" }}</span>
+            </time>
+            <div class="diary-item__body">{{ .Content }}</div>
           </div>
-
-          <div class="diary-card__body">{{ .Content }}</div>
         </article>
         {{ end }}
       </div>

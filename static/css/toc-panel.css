@@ -1,0 +1,46 @@
+/* Series Nav — inline block below hr */
+
+.series-nav {
+  margin: 1.5em 0 2em;
+  font-size: 0.85em;
+}
+
+.series-nav-label {
+  color: #999;
+  margin: 0 0 0.6em;
+  letter-spacing: 0.02em;
+}
+
+.series-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  line-height: 2;
+}
+
+.series-nav-list li {
+  padding: 0;
+  color: #bbb;
+}
+
+.series-nav-list li a {
+  color: #bbb;
+  border-bottom: none;
+  transition: color 0.15s;
+}
+
+.series-nav-list li a:hover {
+  color: #333;
+}
+
+/* 当前篇：黑色 + 加粗，不是链接 */
+.series-nav-list li.current span {
+  color: #222;
+  font-weight: 500;
+}
+
+/* 番外篇：斜体 */
+.series-nav-list li.series-extra a,
+.series-nav-list li.series-extra span {
+  font-style: italic;
+}

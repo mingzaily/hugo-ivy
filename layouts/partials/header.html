@@ -60,6 +60,7 @@
     </script>
     <script src="{{ "/js/location.js" | relURL }}" defer></script>
     {{ partial "head_custom.html" . }}
+    <link rel="stylesheet" href="{{ "/css/toc-panel.css" | relURL }}" />
   </head>
 
   {{- $section := (replaceRE "^/([^/]+)/.*" "$1" .RelPermalink) -}}
