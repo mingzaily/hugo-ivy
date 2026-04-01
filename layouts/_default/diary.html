@@ -1,16 +1,58 @@
-{{ partial "header.html" . }} {{ .Content }}
+{{ partial "header.html" . }}
 
-<div class="diary-container">
-  <div class="diary-content">
-    <ul class="diary-list">
-      {{ range (where .Site.RegularPages "Section" "diary") }}
-      <li class="diary-entry">
-        <p class="diary-text">{{ .Content }}</p>
-        <p class="diary-date">{{ .Date.Format "2006/01/02" }}</p>
-      </li>
-      {{ end }}
-    </ul>
+{{ $entries := .RegularPages.ByDate.Reverse }}
+{{ $entryCount := len $entries }}
+
+<div class="diary-page">
+  <section class="diary-hero">
+    <p class="diary-hero__eyebrow">Moments, Notes, Timeline</p>
+
+    {{ with .Content }}
+    <div class="diary-hero__intro">{{ . }}</div>
+    {{ else }}
+    <p class="diary-hero__intro">
+      把短一点的日常、碎片想法和阶段性心情，留在这条轻量的时间线里。
+    </p>
+    {{ end }}
+
+    {{ if gt $entryCount 0 }}
+    <div class="diary-hero__stats" aria-label="说说概览">
+      <span>{{ $entryCount }} 条记录</span>
+      <span>按时间倒序</span>
+      <span>最新 {{ (index $entries 0).Date.Format "2006/01/02" }}</span>
+    </div>
+    {{ end }}
+  </section>
+
+  {{ if gt $entryCount 0 }}
+  <div class="diary-stream">
+    {{ range sort ($entries.GroupByDate "2006") "Key" "desc" }}
+    <section class="diary-year">
+      <div class="diary-year__label">
+        <span>{{ .Key }}</span>
+      </div>
+
+      <div class="diary-year__entries">
+        {{ range sort .Pages "Date" "desc" }}
+        <article class="diary-card" id="diary-{{ .Date.Format "20060102" }}">
+          <div class="diary-card__date">
+            <span class="diary-card__month">{{ .Date.Format "01 月" }}</span>
+            <strong class="diary-card__day">{{ .Date.Format "02" }}</strong>
+            <span class="diary-card__stamp">{{ .Date.Format "2006/01/02" }}</span>
+          </div>
+
+          <div class="diary-card__body">{{ .Content }}</div>
+        </article>
+        {{ end }}
+      </div>
+    </section>
+    {{ end }}
   </div>
+  {{ else }}
+  <section class="diary-empty">
+    <p>这里还没有说说，第一条留给下一次灵光一闪。</p>
+  </section>
+  {{ end }}
 </div>
 
 {{ partial "footer.html" . }}
